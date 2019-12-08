@@ -1,1 +1,23 @@
 
+pipeline{
+agent any
+stages
+{stage ('git clone')
+{
+steps
+{git 'https://github.com/govind-pawar/maven-project.git'
+}
+}
+}
+{ stage ('compile code')
+{ steps {
+  withMaven(jdk: 'localjdk', maven: 'localmaven')
+  { sh 'mvn compile'}}}
+}
+}
+
+
+{stage 
+sshagent(['ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLu4NGy+zxM6u9aeomOy2o5hrAyd/KkF5/ToZik48SUJsIQ9lEsIEhXmqojjQYCDP4WzoUByXA87FBQeRg6rv75WRozPVwwsYmofbXj2kGmptC+vgvEbIwC656nzoTc184QYlq6mpcAiC6M9DDEooA0GqtedJbH2vTuVKtynHO2O+IjPitABRdTf00oV7Qv2v/IJeUWH403C7R2DPJl3bOLIEaKX3X3zJF5+Ab3gJJTuzH+jPYbxOXSXS0WWQuVvJmigtiQR9o0qeLNy4zI2S1Rmn47727ErGwu1jk2sYihlqP7kLkLHdB3ApcoUSwJXuwV7ULZ+7sgeLLiQF1DgQ/ root@ip-172-31-35-239.ec2.internal'])
+sh 'scp -o StrictHostKeyChecking=no */target/*.war ec2-user@172.31.35.239:/usr/share/tomcat/webapps'
+}
